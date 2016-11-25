@@ -26,6 +26,7 @@ import com.ayuget.redface.ui.fragment.PostsFragmentBuilder;
 public class TopicPageAdapter extends FragmentStatePagerAdapter {
     private Topic topic;
     private final int initialPage;
+    private int lastVisiblePage;
 
     public TopicPageAdapter(FragmentManager fm, Topic topic, int initialPage) {
         super(fm);
@@ -36,6 +37,15 @@ public class TopicPageAdapter extends FragmentStatePagerAdapter {
     public void notifyTopicUpdated(Topic topic) {
         this.topic = topic;
         notifyDataSetChanged();
+    }
+
+    public void setLastVisiblePage(int page) {
+        lastVisiblePage = page;
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
     @Override
@@ -51,6 +61,17 @@ public class TopicPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Page " + String.valueOf(position + 1);
+        String extra = "";
+
+        if (position == lastVisiblePage && position != topic.pagesCount()) {
+            int remainder = topic.pagesCount() - position;
+            if (remainder > 99) {
+                extra = " (99+)";
+            } else {
+                extra = " (" + String.valueOf(topic.pagesCount() - position) + ")";
+            }
+        }
+
+        return "Page " + String.valueOf(position + 1) + extra;
     }
 }
