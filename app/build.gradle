@@ -111,6 +111,7 @@ dependencies {
     compile 'com.squareup.moshi:moshi:1.1.0'
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile "com.github.VictorAlbertos:RxActivityResult:0.3.4"
+    compile 'org.jsoup:jsoup:1.10.1'
 
     // Deal with Android M new-style permissions
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.5.1@aar'

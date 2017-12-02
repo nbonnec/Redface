@@ -380,7 +380,7 @@ public class TopicsActivity extends MultiPaneActivity implements TopicListFragme
                 UiUtils.shareText(this, mdEndpoints.topic(event.getTopic()));
                 break;
             }
-            case UIConstants.TOPIC_ACTION_UNFLAG:
+            case UIConstants.TOPIC_ACTION_UNFLAG: {
                 User activeUser = userManager.getActiveUser();
                 subscribe(unflagSubscriptionHandler.load(activeUser, mdService.unflagTopic(activeUser, event.getTopic()), new EndlessObserver<Boolean>() {
                     @Override
@@ -395,6 +395,7 @@ public class TopicsActivity extends MultiPaneActivity implements TopicListFragme
                     }
                 }));
                 break;
+            }
         }
     }
 

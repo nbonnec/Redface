@@ -25,6 +25,7 @@ import com.ayuget.redface.data.api.MDService;
 import com.ayuget.redface.data.api.SmileyService;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToBBCode;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToCategoryList;
+import com.ayuget.redface.data.api.hfr.transforms.HTMLToPollResults;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPostList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPrivateMessageList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToProfile;
@@ -32,6 +33,7 @@ import com.ayuget.redface.data.api.hfr.transforms.HTMLToSmileyList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToTopic;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToTopicList;
 import com.ayuget.redface.data.api.model.Category;
+import com.ayuget.redface.data.api.model.PollResults;
 import com.ayuget.redface.data.api.model.Post;
 import com.ayuget.redface.data.api.model.PrivateMessage;
 import com.ayuget.redface.data.api.model.Profile;
@@ -280,12 +282,7 @@ public class HFRForumService implements MDService {
     @Override
     public Observable<List<PrivateMessage>> getNewPrivateMessages(User user) {
         return listPrivateMessages(user, 1)
-                .flatMap(new Func1<List<PrivateMessage>, Observable<PrivateMessage>>() {
-                    @Override
-                    public Observable<PrivateMessage> call(List<PrivateMessage> privateMessages) {
-                        return Observable.from(privateMessages);
-                    }
-                })
+                .flatMap(Observable::from)
                 .filter(PrivateMessage::hasUnreadMessages)
                 .toList();
     }
@@ -316,5 +313,11 @@ public class HFRForumService implements MDService {
     @Override
     public Observable<TopicSearchResult> searchInTopic(User user, Topic topic, long startFromPostId, String word, String author, boolean firstSearch) {
         return mdMessageSender.searchInTopic(user, topic, startFromPostId, word, author, firstSearch, currentHashcheck);
+    }
+
+    @Override
+    public Observable<PollResults> getPollResults(User user, Topic topic) {
+        return pageFetcher.fetchSource(user, mdEndpoints.topic(topic))
+                .map(new HTMLToPollResults());
     }
 }
