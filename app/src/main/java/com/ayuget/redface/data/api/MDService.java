@@ -17,6 +17,7 @@
 package com.ayuget.redface.data.api;
 
 import com.ayuget.redface.data.api.model.Category;
+import com.ayuget.redface.data.api.model.PollChoices;
 import com.ayuget.redface.data.api.model.PollResults;
 import com.ayuget.redface.data.api.model.Post;
 import com.ayuget.redface.data.api.model.PrivateMessage;
@@ -152,4 +153,9 @@ public interface MDService {
      * Get the poll results
      */
     Observable<PollResults> getPollResults(User user, Topic topic);
+
+    /**
+     * Get the poll choices
+     */
+    Observable<PollChoices> getPollChoices(User user, Topic topic);
 }

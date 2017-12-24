@@ -33,19 +33,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class HTMLToPollResultsTest extends BaseTestCase {
     @Test
-    public void test_parseHFRPoll() throws IOException {
+    public void test_parseHFRPollResults() throws IOException {
         HTMLToPollResults htmlToPollResults = new HTMLToPollResults();
 
         PollResults pollResults = htmlToPollResults.call(readAssetFile("hfr_poll_results.html"));
 
-        List<PollResults.ChoiceResult> choiceResults = new ArrayList<>();
-        choiceResults.add(PollResults.ChoiceResult.create("1." + Character.toString((char) 0x00A0) + " Oui", (float) 16.7, 2));
-        choiceResults.add(PollResults.ChoiceResult.create("2." + Character.toString((char) 0x00A0) + " Non", (float) 8.3, 1));
-        choiceResults.add(PollResults.ChoiceResult.create("3." + Character.toString((char) 0x00A0) + " Peut-être", (float) 16.7, 2));
-        choiceResults.add(PollResults.ChoiceResult.create("4." + Character.toString((char) 0x00A0) + " Caca", (float) 50, 6));
-        choiceResults.add(PollResults.ChoiceResult.create("5." + Character.toString((char) 0x00A0) + " jj", (float) 8.3, 1));
+        List<PollResults.Result> results = new ArrayList<>();
+        results.add(PollResults.Result.create("1." + Character.toString((char) 0x00A0) + " Oui", (float) 16.7, 2));
+        results.add(PollResults.Result.create("2." + Character.toString((char) 0x00A0) + " Non", (float) 8.3, 1));
+        results.add(PollResults.Result.create("3." + Character.toString((char) 0x00A0) + " Peut-être", (float) 16.7, 2));
+        results.add(PollResults.Result.create("4." + Character.toString((char) 0x00A0) + " Caca", (float) 50, 6));
+        results.add(PollResults.Result.create("5." + Character.toString((char) 0x00A0) + " jj", (float) 8.3, 1));
 
         assertThat(pollResults.title()).isEqualTo("Est-ce un sondage?");
-        assertThat(pollResults.choices()).isEqualTo(choiceResults);
+        assertThat(pollResults.results()).isEqualTo(results);
     }
 }

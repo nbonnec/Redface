@@ -15,10 +15,18 @@ package com.ayuget.redface.data.api.model;
  * limitations under the License.
  */
 
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public class PollChoices {
-    String title;
-    boolean oneChoice;
-    List<String> choices;
+@AutoValue
+public abstract class PollChoices {
+
+    public abstract String title();
+    public abstract int choiceNb();
+    public abstract List<String> choices();
+
+    public static PollChoices create(String title, int choiceNb, List<String> choices) {
+        return new AutoValue_PollChoices(title, choiceNb, choices);
+    }
 }

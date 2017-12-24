@@ -22,19 +22,19 @@ import java.util.List;
 @AutoValue
 public abstract class PollResults {
     @AutoValue
-    public static abstract class ChoiceResult {
+    public static abstract class Result {
         public abstract String name();
         public abstract float percent();
         public abstract int votes();
 
-        public static ChoiceResult create(String name, float percent, int votes) {
-            return new AutoValue_PollResults_ChoiceResult(name, percent, votes);
+        public static Result create(String name, float percent, int votes) {
+            return new AutoValue_PollResults_Result(name, percent, votes);
         }
     }
     public abstract String title();
-    public abstract List<ChoiceResult> choices();
+    public abstract List<Result> results();
 
-    public static PollResults create(String title, List<ChoiceResult> choices) {
-        return new AutoValue_PollResults(title, choices);
+    public static PollResults create(String title, List<Result> results) {
+        return new AutoValue_PollResults(title, results);
     }
 }

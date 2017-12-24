@@ -25,6 +25,7 @@ import com.ayuget.redface.data.api.MDService;
 import com.ayuget.redface.data.api.SmileyService;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToBBCode;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToCategoryList;
+import com.ayuget.redface.data.api.hfr.transforms.HTMLToPollChoices;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPollResults;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPostList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPrivateMessageList;
@@ -33,6 +34,7 @@ import com.ayuget.redface.data.api.hfr.transforms.HTMLToSmileyList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToTopic;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToTopicList;
 import com.ayuget.redface.data.api.model.Category;
+import com.ayuget.redface.data.api.model.PollChoices;
 import com.ayuget.redface.data.api.model.PollResults;
 import com.ayuget.redface.data.api.model.Post;
 import com.ayuget.redface.data.api.model.PrivateMessage;
@@ -319,5 +321,11 @@ public class HFRForumService implements MDService {
     public Observable<PollResults> getPollResults(User user, Topic topic) {
         return pageFetcher.fetchSource(user, mdEndpoints.topic(topic))
                 .map(new HTMLToPollResults());
+    }
+
+    @Override
+    public Observable<PollChoices> getPollChoices(User user, Topic topic) {
+        return pageFetcher.fetchSource(user, mdEndpoints.topic(topic))
+                .map(new HTMLToPollChoices());
     }
 }
