@@ -66,6 +66,7 @@ import com.ayuget.redface.ui.event.GoToPostEvent;
 import com.ayuget.redface.ui.event.OverriddenPagePosition;
 import com.ayuget.redface.ui.event.PageRefreshRequestEvent;
 import com.ayuget.redface.ui.event.PageSelectedEvent;
+import com.ayuget.redface.ui.event.PollPresenceEvent;
 import com.ayuget.redface.ui.event.ScrollToPositionEvent;
 import com.ayuget.redface.ui.event.ShowAllSpoilersEvent;
 import com.ayuget.redface.ui.event.TopicPageCountUpdatedEvent;
@@ -99,8 +100,10 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
     private static final String ARG_IS_IN_SEARCH_MODE = "isInSearchMode";
     private static final String ARG_TOPIC = "topic";
     private static final String ARG_CURRENT_SEARCH_RESULT = "currentSearchResult";
+    private static final String ARG_HAS_POLL = "hasPoll";
 
-    private static final int UNFLAG_ACTION = 42;
+    private static final int UNFLAG_ACTION = UiUtils.generateViewId();
+    private static final int POLL_ACTION = UiUtils.generateViewId();
 
     private TopicPageAdapter topicPageAdapter;
 
@@ -198,6 +201,11 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
     private boolean isInActionMode = false;
     private boolean isInSearchMode = false;
 
+    /**
+     * Indicate if the topic has a poll.
+     */
+    private boolean hasPoll = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,6 +226,7 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
             isInActionMode = savedInstanceState.getBoolean(ARG_IS_IN_ACTION_MODE);
             isInSearchMode = savedInstanceState.getBoolean(ARG_IS_IN_SEARCH_MODE);
             currentTopicSearchResult = savedInstanceState.getParcelable(ARG_CURRENT_SEARCH_RESULT);
+            hasPoll = savedInstanceState.getBoolean(ARG_HAS_POLL);
         }
 
         if (topicPositionsStack == null) {
@@ -297,6 +306,7 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
 
         outState.putParcelableArrayList(ARG_TOPIC_POSITIONS_STACK, topicPositionsStack);
         outState.putBoolean(ARG_IS_IN_SEARCH_MODE, isInSearchMode);
+        outState.putBoolean(ARG_HAS_POLL, hasPoll);
 
         if (isInActionMode) {
             outState.putParcelable(ARG_QUOTED_MESSAGES_CACHE, quotedMessagesCache);
@@ -345,7 +355,24 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
             toolbar.getMenu().add(Menu.NONE, UNFLAG_ACTION, lastAction + 100, getString(R.string.action_unflag_topic));
         }
 
+        setupPollItemMenu();
         setupIntraTopicSearch(toolbar);
+    }
+
+    /**
+     * Add or remove the poll item depending on the presence of a poll in the page.
+     * getActivity.invalidateOptionsMenu() does not seem to work so we add / remove item manually.
+     */
+    private void setupPollItemMenu() {
+        Menu menu = getToolbar().getMenu();
+
+        if (hasPoll) {
+            menu.add(Menu.NONE, POLL_ACTION,
+                    getResources().getInteger(R.integer.menu_topic_poll_order),
+                    getString(R.string.action_see_poll));
+        } else if (getToolbar().getMenu().findItem(POLL_ACTION) != null) {
+            menu.removeItem(POLL_ACTION);
+        }
     }
 
     private void setupIntraTopicSearch(Toolbar toolbar) {
@@ -563,6 +590,18 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
         }
     }
 
+
+    /**
+     * Throw by {@link com.ayuget.redface.data.api.hfr.HFRForumService#listPosts(User, Topic, int, boolean, boolean, boolean)}.
+     * Fixme Event is thrown for each page, so when loading the topic for the first time, it is loaded 3 times.
+     */
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onPollPresenceEvent(PollPresenceEvent event) {
+        hasPoll = event.isPresent();
+        setupPollItemMenu();
+    }
+
     /**
      * Callback called by the activity when the back key has been pressed
      * @return true if event was consumed, false otherwise
@@ -640,11 +679,15 @@ public class TopicFragment extends ToolbarFragment implements ViewPager.OnPageCh
             case R.id.action_share:
                 UiUtils.shareText(getActivity(), topicUrl);
                 break;
-            case UNFLAG_ACTION:
-                unflagTopic();
-                break;
             case R.id.action_open_in_browser:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(topicUrl)));
+                break;
+            default:
+                if (id == POLL_ACTION) {
+
+                } else if (id == UNFLAG_ACTION) {
+                    unflagTopic();
+                }
                 break;
         }
 

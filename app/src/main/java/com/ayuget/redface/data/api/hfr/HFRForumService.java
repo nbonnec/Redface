@@ -25,8 +25,6 @@ import com.ayuget.redface.data.api.MDService;
 import com.ayuget.redface.data.api.SmileyService;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToBBCode;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToCategoryList;
-import com.ayuget.redface.data.api.hfr.transforms.HTMLToPollChoices;
-import com.ayuget.redface.data.api.hfr.transforms.HTMLToPollResults;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPostList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToPrivateMessageList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToProfile;
@@ -34,8 +32,7 @@ import com.ayuget.redface.data.api.hfr.transforms.HTMLToSmileyList;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToTopic;
 import com.ayuget.redface.data.api.hfr.transforms.HTMLToTopicList;
 import com.ayuget.redface.data.api.model.Category;
-import com.ayuget.redface.data.api.model.PollChoices;
-import com.ayuget.redface.data.api.model.PollResults;
+import com.ayuget.redface.data.api.model.PollType;
 import com.ayuget.redface.data.api.model.Post;
 import com.ayuget.redface.data.api.model.PrivateMessage;
 import com.ayuget.redface.data.api.model.Profile;
@@ -53,6 +50,7 @@ import com.ayuget.redface.network.PageFetcher;
 import com.ayuget.redface.settings.Blacklist;
 import com.ayuget.redface.settings.RedfaceSettings;
 import com.ayuget.redface.ui.UIConstants;
+import com.ayuget.redface.ui.event.PollPresenceEvent;
 import com.ayuget.redface.ui.event.TopicPageCountUpdatedEvent;
 import com.ayuget.redface.util.UserUtils;
 import com.google.common.base.Optional;
@@ -175,6 +173,12 @@ public class HFRForumService implements MDService {
                     // Hashcheck is needed by the server to post new content
                     currentHashcheck = HashcheckExtractor.extract(htmlSource);
                     return htmlSource;
+                })
+                .map(s -> {
+                    // notify the presence of a poll or not
+                    new Handler(Looper.getMainLooper()).post(() ->
+                            bus.post(new PollPresenceEvent(PollTypeExtractor.extract(s) != PollType.NO_POLL)));
+                    return s;
                 })
                 .map(new HTMLToPostList()) // Convert HTML source to objects
                 .map(posts -> {
@@ -315,17 +319,5 @@ public class HFRForumService implements MDService {
     @Override
     public Observable<TopicSearchResult> searchInTopic(User user, Topic topic, long startFromPostId, String word, String author, boolean firstSearch) {
         return mdMessageSender.searchInTopic(user, topic, startFromPostId, word, author, firstSearch, currentHashcheck);
-    }
-
-    @Override
-    public Observable<PollResults> getPollResults(User user, Topic topic) {
-        return pageFetcher.fetchSource(user, mdEndpoints.topic(topic))
-                .map(new HTMLToPollResults());
-    }
-
-    @Override
-    public Observable<PollChoices> getPollChoices(User user, Topic topic) {
-        return pageFetcher.fetchSource(user, mdEndpoints.topic(topic))
-                .map(new HTMLToPollChoices());
     }
 }

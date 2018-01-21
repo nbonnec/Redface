@@ -17,8 +17,6 @@
 package com.ayuget.redface.data.api;
 
 import com.ayuget.redface.data.api.model.Category;
-import com.ayuget.redface.data.api.model.PollChoices;
-import com.ayuget.redface.data.api.model.PollResults;
 import com.ayuget.redface.data.api.model.Post;
 import com.ayuget.redface.data.api.model.PrivateMessage;
 import com.ayuget.redface.data.api.model.Profile;
@@ -148,14 +146,4 @@ public interface MDService {
      * Searches a particular word and/or author in a topic, starting at a given post id.
      */
     Observable<TopicSearchResult> searchInTopic(User user, Topic topic, long startFromPostId, String word, String author, boolean firstSearch);
-
-    /**
-     * Get the poll results
-     */
-    Observable<PollResults> getPollResults(User user, Topic topic);
-
-    /**
-     * Get the poll choices
-     */
-    Observable<PollChoices> getPollChoices(User user, Topic topic);
 }

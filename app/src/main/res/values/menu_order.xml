@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="menu_topic_search_order">20</integer>
+    <integer name="menu_topic_refresh_order">50</integer>
+    <integer name="menu_topic_spoilers_order">75</integer>
+    <integer name="menu_topic_first_page_order">100</integer>
+    <integer name="menu_topic_go_to_page_order">150</integer>
+    <integer name="menu_topic_last_page_order">200</integer>
+    <integer name="menu_topic_poll_order">250</integer>
+    <integer name="menu_topic_copy_link_order">300</integer>
+    <integer name="menu_topic_share_order">400</integer>
+    <integer name="menu_topic_browser_order">500</integer>
+</resources>
