@@ -1,3 +1,4 @@
+
 buildscript {
 	repositories {
 		mavenCentral()
@@ -58,6 +59,11 @@ android {
 	}
 	lint {
 		abortOnError false
+	}
+	testOptions {
+		unitTests {
+			includeAndroidResources = true
+		}
 	}
 	namespace 'com.ayuget.redface'
 
@@ -144,8 +150,8 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.assertj:assertj-core:1.7.1'
-	testImplementation 'org.mockito:mockito-core:1.9.5'
-	testImplementation "org.robolectric:robolectric:3.1.2"
+	testImplementation 'org.mockito:mockito-core:5.17.0'
+	testImplementation "org.robolectric:robolectric:4.14.1"
 
 	// Proguard related
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
