@@ -103,7 +103,7 @@ public class PrivateMessagesWorker extends Worker {
         resultIntent.setAction(String.valueOf(privateMessage.getId()));
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         resultIntent.putExtra(UIConstants.ARG_SELECTED_PM, privateMessage);
-        return PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_IMMUTABLE);
     }
 
     private Notification createNotificationForPrivateMessage(String messagesGroup, PrivateMessage privateMessage) {
@@ -125,6 +125,6 @@ public class PrivateMessagesWorker extends Worker {
     private PendingIntent buildPrivateMessageSummaryNotificationIntent(Context context) {
         Intent resultIntent = new Intent(context, PrivateMessagesActivity.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_IMMUTABLE);
     }
 }
