@@ -57,14 +57,14 @@ public class PrivateMessagesWorker extends Worker {
     public Result doWork() {
         Timber.d("PrivateMessagesWorker is running");
 
-        if (! appSettings.arePrivateMessagesNoticationsEnabled()) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+
+        if (!appSettings.arePrivateMessagesNoticationsEnabled() || !notificationManager.areNotificationsEnabled()) {
             Timber.d("Private message notifications are disabled, exiting worker");
             return Result.success();
         }
 
         Timber.d("Notifications are enabled, checking new private messages for all app users");
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
 
         for (User appUser : userManager.getRealUsers()) {
             Timber.d("Checking new private messages for user '%s'", appUser.getUsername());
@@ -89,6 +89,7 @@ public class PrivateMessagesWorker extends Worker {
                 Notification notificationForPrivateMessage = createNotificationForPrivateMessage(userNotificationsGroup, privateMessage);
                 int privateMessageId = (int) privateMessage.getId();
 
+                // Safe to call here, as we called areNotificationEnabled() above
                 notificationManager.notify(privateMessageId, notificationForPrivateMessage);
 
                 privateMessagesNotificationHandler.storeNotificationAsSent(appUser, privateMessage);
