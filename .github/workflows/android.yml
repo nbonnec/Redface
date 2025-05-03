@@ -45,6 +45,7 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - uses: actions/upload-artifact@v4
+        if: github.event_name == 'release' && github.event.action == 'created'
         with:
           name: Signed app bundle
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
