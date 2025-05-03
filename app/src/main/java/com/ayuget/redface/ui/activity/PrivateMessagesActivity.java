@@ -89,7 +89,7 @@ public class PrivateMessagesActivity extends MultiPaneActivity implements Privat
                             Timber.w("POST_NOTIFICATIONS denied, won't setup notifications");
                             return;
                         }
-                        RedfaceNotifications.setupNotifications(this);
+                        // Do nothing as the worker is started at the launch of the app
                     });
         }
 
