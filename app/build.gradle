@@ -28,7 +28,7 @@ android {
 
 	defaultConfig {
 		applicationId "com.ayuget.redface"
-		minSdkVersion 21
+		minSdkVersion 16
 		targetSdkVersion 33
 		multiDexEnabled true
 		versionCode 5001
