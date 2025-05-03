@@ -1,0 +1,30 @@
+@startuml How to start the worker
+(*) --> Application start
+if "Notification enabled?" then
+    --> [yes] "Start worker"
+    --> (*)
+else
+    --> [no] if "" then
+        --> "PM activity"
+        if "Notification permission enabled?" then
+            --> [no] if "Ask permission" then
+                        --> [granted] "Start worker"
+                     else
+                        --> (*)
+                     endif
+        else
+            --> (*)
+        endif
+    else
+        --> "General settings activity"
+        if "Notification permission enabled?" then
+            --> [yes] "Show PM setting"
+            --> "PM enabled by user"
+            --> "Start worker"
+        else
+            --> [no] "Grey PM setting"
+            --> (*)
+        endif
+    endif
+
+@enduml
