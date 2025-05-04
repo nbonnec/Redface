@@ -24,9 +24,10 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        # Only write to the cache for builds on the 'master' and 'develop' branches. (Default is 'main' only.)
-        # Builds on other branches will only read existing entries from the cache.
-        cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' }}
+        with:
+          # Only write to the cache for builds on the 'master' and 'develop' branches. (Default is 'main' only.)
+          # Builds on other branches will only read existing entries from the cache.
+          cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' }}
 
       - name: Execute Gradle build
         run: ./gradlew build
